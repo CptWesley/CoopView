@@ -29,21 +29,17 @@ namespace CoopView
                             GetArgument(args, 2),
                             GetArgument(args, 3),
                             GetArgument(args, 4),
-                            GetArgument(args, 5),
-                            GetArgument(args, 6)).Start();
+                            GetArgument(args, 5)).Start();
                     break;
                 default:
                     UsageErrorExit();
                     break;
             }
-
-            Console.WriteLine("Press any key to exit...");
-            Console.Read();
         }
 
         private static void UsageErrorExit()
                 => ErrorExit("Usage:" + Environment.NewLine +
-                        "Client mode: client <ip> <port> <window name> <width> <height> <fps>" + Environment.NewLine +
+                        "Client mode: client <process> <ip> <port> <scale> <fps>" + Environment.NewLine +
                         "Server mode: host <port>");
 
         /// <summary>
