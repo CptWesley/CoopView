@@ -51,7 +51,8 @@ namespace CoopView
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnShown(object sender, EventArgs e)
         {
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 IPEndPoint ep = new IPEndPoint(IPAddress.Any, this.port);
                 UdpClient udp = new UdpClient(ep);
 
