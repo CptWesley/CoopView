@@ -70,7 +70,6 @@ namespace CoopView
                             this.pb.Height = bmp.Height;
                             this.pb.Image = bmp;
                         }));
-                        System.Console.WriteLine(bmp.Width + " : " + bmp.Height);
                     }
                 }
             });
