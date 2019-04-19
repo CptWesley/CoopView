@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CoopView
@@ -50,23 +51,28 @@ namespace CoopView
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnShown(object sender, EventArgs e)
         {
-            IPEndPoint ep = new IPEndPoint(IPAddress.Any, this.port);
-            UdpClient udp = new UdpClient(ep);
+            Task.Run(() => {
+                IPEndPoint ep = new IPEndPoint(IPAddress.Any, this.port);
+                UdpClient udp = new UdpClient(ep);
 
-            while (true)
-            {
-                byte[] data = udp.Receive(ref ep);
-                using (var ms = new MemoryStream(data))
+                while (true)
                 {
-                    Bitmap bmp = new Bitmap(ms);
-                    this.Width = bmp.Width;
-                    this.Height = bmp.Height;
-                    this.pb.Width = bmp.Width;
-                    this.pb.Height = bmp.Height;
-                    this.pb.Image = bmp;
-                    System.Console.WriteLine(bmp.Width + " : " + bmp.Height);
+                    byte[] data = udp.Receive(ref ep);
+                    using (var ms = new MemoryStream(data))
+                    {
+                        Bitmap bmp = new Bitmap(ms);
+                        this.Invoke((MethodInvoker)(() =>
+                        {
+                            this.Width = bmp.Width;
+                            this.Height = bmp.Height;
+                            this.pb.Width = bmp.Width;
+                            this.pb.Height = bmp.Height;
+                            this.pb.Image = bmp;
+                        }));
+                        System.Console.WriteLine(bmp.Width + " : " + bmp.Height);
+                    }
                 }
-            }
+            });
         }
     }
 }
