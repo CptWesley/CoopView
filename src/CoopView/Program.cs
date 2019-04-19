@@ -40,7 +40,7 @@ namespace CoopView
         private static void UsageErrorExit()
                 => ErrorExit("Usage:" + Environment.NewLine +
                         "Client mode: client <process> <ip> <port> <scale> <fps>" + Environment.NewLine +
-                        "Server mode: host <port>");
+                        "Server mode: server <port>");
 
         /// <summary>
         /// Exits the program with the given error message.
