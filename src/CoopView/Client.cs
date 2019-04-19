@@ -48,7 +48,7 @@ namespace CoopView
         /// <returns>The created client instance.</returns>
         public static Client Create(string name, string ip, string port, string scale, string fps)
         {
-            HWND handle;
+            HWND handle = default(HWND);
             foreach (Process p in Process.GetProcesses())
             {
                 if (p.MainWindowTitle.ToLowerInvariant().Contains(name.ToLowerInvariant()))
@@ -58,7 +58,7 @@ namespace CoopView
             }
 
             return new Client(
-                Process.GetProcessesByName(name)[0].MainWindowHandle,
+                handle,
                 ip,
                 TryParseDefaultTo(port, 43600),
                 TryParseDefaultTo(scale, 6),
