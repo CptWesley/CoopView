@@ -100,21 +100,25 @@ namespace CoopView
 
         private byte[] GetFrame()
         {
-            HDC hdc = User32_Gdi.GetDC(this.hwnd);
             RECT windowRect = default(RECT);
             User32_Gdi.GetClientRect(hwnd, ref windowRect);
 
             Bitmap bmp = new Bitmap(windowRect.Width, windowRect.Height);
             using (Graphics g = Graphics.FromImage(bmp))
             {
-                Gdi32.BitBlt(g.GetHdc(), 0, 0, windowRect.Width, windowRect.Height, hdc, 0, 0, Gdi32.RasterOperationMode.SRCCOPY);
+                HDC sourceHdc = User32_Gdi.GetDC(this.hwnd);
+                HDC targetHdc = g.GetHdc();
+                Gdi32.BitBlt(targetHdc, 0, 0, windowRect.Width, windowRect.Height, sourceHdc, 0, 0, Gdi32.RasterOperationMode.SRCCOPY);
+                g.ReleaseHdc();
             }
 
-            bmp = new Bitmap(bmp, bmp.Width / scale, bmp.Height / scale);
+            Bitmap sendableBmp = new Bitmap(bmp, bmp.Width / scale, bmp.Height / scale);
+            bmp.Dispose();
 
             using (MemoryStream ms = new MemoryStream())
             {
-                bmp.Save(ms, ImageFormat.Jpeg);
+                sendableBmp.Save(ms, ImageFormat.Jpeg);
+                sendableBmp.Dispose();
                 return ms.ToArray();
             }
         }
