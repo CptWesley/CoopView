@@ -103,7 +103,7 @@ namespace CoopView
             RECT windowRect = default(RECT);
             User32_Gdi.GetClientRect(hwnd, ref windowRect);
 
-            Bitmap bmp = new Bitmap(windowRect.Width, windowRect.Height);
+            Bitmap bmp = new Bitmap(Math.Max(1, windowRect.Width), Math.Max(1, windowRect.Height));
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 HDC sourceHdc = User32_Gdi.GetDC(this.hwnd);
@@ -112,7 +112,7 @@ namespace CoopView
                 g.ReleaseHdc();
             }
 
-            Bitmap sendableBmp = new Bitmap(bmp, bmp.Width / scale, bmp.Height / scale);
+            Bitmap sendableBmp = new Bitmap(bmp, Math.Max(1, bmp.Width / scale), Math.Max(1, bmp.Height / scale));
             bmp.Dispose();
 
             using (MemoryStream ms = new MemoryStream())
