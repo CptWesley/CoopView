@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace CoopView
 {
@@ -11,30 +12,25 @@ namespace CoopView
         /// The main entry point for the application.
         /// </summary>
         /// <param name="args">Program arguments.</param>
+        [STAThread]
         public static void Main(string[] args)
         {
             switch (GetArgument(args, 0))
             {
                 case "server":
                 case "s":
+                    Application.EnableVisualStyles();
+                    Application.Run(Server.Create(GetArgument(args, 1)));
                     break;
                 case "client":
                 case "c":
-                    try
-                    {
-                        Client.Create(
+                    Client.Create(
                             GetArgument(args, 1),
                             GetArgument(args, 2),
                             GetArgument(args, 3),
                             GetArgument(args, 4),
                             GetArgument(args, 5),
                             GetArgument(args, 6)).Start();
-                    }
-                    catch
-                    {
-                        UsageErrorExit();
-                    }
-
                     break;
                 default:
                     UsageErrorExit();
