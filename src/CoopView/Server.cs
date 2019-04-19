@@ -24,7 +24,7 @@ namespace CoopView
             this.port = port;
             this.pb = new PictureBox();
             this.Controls.Add(pb);
-            this.Shown += Start;
+            this.Shown += OnShown;
         }
 
         /// <summary>
@@ -44,9 +44,11 @@ namespace CoopView
         }
 
         /// <summary>
-        /// Starts this instance.
+        /// Executed when the form is shown.
         /// </summary>
-        private void Start(object sender, EventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void OnShown(object sender, EventArgs e)
         {
             IPEndPoint ep = new IPEndPoint(IPAddress.Any, this.port);
             UdpClient udp = new UdpClient(ep);
