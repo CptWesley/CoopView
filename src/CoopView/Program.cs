@@ -15,8 +15,8 @@ namespace CoopView
         {
             switch (GetArgument(args, 0))
             {
-                case "host":
-                case "h":
+                case "server":
+                case "s":
                     break;
                 case "client":
                 case "c":
@@ -24,7 +24,7 @@ namespace CoopView
                 default:
                     ErrorExit("Usage:" + Environment.NewLine +
                         "Client mode: client <ip> <port> <window name> <width> <height> <fps>" + Environment.NewLine +
-                        "Host mode: host <port>");
+                        "Server mode: host <port>");
                     break;
             }
         }
