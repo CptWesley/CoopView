@@ -14,11 +14,16 @@ namespace CoopView
     /// </summary>
     public class Client
     {
+        private const int FrameSize = 65507;
+        private const int HeaderSize = 12;
+        private const int DataSize = FrameSize - HeaderSize;
+
         private HWND hwnd;
         private string ip;
         private int port;
         private int scale;
         private int delay;
+        private int sequenceNumber;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
@@ -72,11 +77,19 @@ namespace CoopView
         {
             UdpClient udp = new UdpClient();
             udp.Connect(ip, port);
+            sequenceNumber = int.MinValue;
 
             while (true)
             {
                 byte[] bytes = GetFrame();
-                udp.Send(bytes, bytes.Length);
+                byte[][] packets = CreatePackets(bytes);
+                sequenceNumber++;
+
+                foreach (byte[] packet in packets)
+                {
+                    udp.Send(packet, packet.Length);
+                }
+
                 Thread.Sleep(this.delay);
             }
         }
@@ -96,6 +109,20 @@ namespace CoopView
             }
 
             return fallback;
+        }
+
+        /// <summary>
+        /// Stores the int in byte array.
+        /// </summary>
+        /// <param name="array">The array.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="value">The value.</param>
+        private static void StoreIntInByteArray(byte[] array, int index, int value)
+        {
+            array[index] = (byte)(value >> 24);
+            array[index + 1] = (byte)(value >> 16);
+            array[index + 2] = (byte)(value >> 8);
+            array[index + 3] = (byte)value;
         }
 
         private byte[] GetFrame()
@@ -121,6 +148,24 @@ namespace CoopView
                 sendableBmp.Dispose();
                 return ms.ToArray();
             }
+        }
+
+        private byte[][] CreatePackets(byte[] data)
+        {
+            int parts = (int)Math.Ceiling(data.Length / (double)DataSize);
+            byte[][] result = new byte[parts][];
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                int size = i < result.Length - 1 ? FrameSize : HeaderSize + data.Length - (i * DataSize);
+                result[i] = new byte[size];
+                StoreIntInByteArray(result[i], 0, sequenceNumber);
+                StoreIntInByteArray(result[i], 4, i);
+                StoreIntInByteArray(result[i], 8, result.Length);
+                Array.Copy(data, i * DataSize, result[i], HeaderSize, size - HeaderSize);
+            }
+
+            return result;
         }
     }
 }
