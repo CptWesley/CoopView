@@ -79,7 +79,7 @@ namespace CoopView
             udp.Connect(ip, port);
             sequenceNumber = int.MinValue;
 
-            while (true)
+            while (User32_Gdi.IsWindow(hwnd))
             {
                 byte[] bytes = GetFrame();
                 byte[][] packets = CreatePackets(bytes);
