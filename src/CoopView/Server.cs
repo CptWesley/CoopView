@@ -87,7 +87,7 @@ namespace CoopView
                     {
                         packet = udp.Receive(ref ep);
                         int sequenceNumber = ReadIntFromByteArray(packet, 0);
-                        if (sequenceNumber > firstSequenceNumber || (sequenceNumber < (int.MinValue / 2) && firstSequenceNumber > (int.MaxValue / 2)))
+                        if (sequenceNumber > firstSequenceNumber || sequenceNumber < (firstSequenceNumber - 128))
                         {
                             overriden = true;
                             break;
